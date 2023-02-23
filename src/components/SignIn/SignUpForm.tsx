@@ -43,6 +43,7 @@ const SignUpForm: React.FC = () => {
           <div></div>
           <div className="flex justify-center">
             <input
+              id="sign-up-show-password-input"
               className="m-0.5"
               type="checkbox"
               checked={showPassword}
@@ -54,7 +55,12 @@ const SignUpForm: React.FC = () => {
                 }
               }}
             />
-            <p className="text-sm text-zinc-100">Show Password</p>
+            <label
+              htmlFor="sign-up-show-password-input"
+              className="text-sm text-zinc-100"
+            >
+              Show Password
+            </label>
           </div>
         </div>
         <div className="flex justify-center">

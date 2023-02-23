@@ -1,4 +1,6 @@
 import { useState } from "react";
+import type { FormEventHandler } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const LogInForm: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -6,13 +8,22 @@ const LogInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const handleSubmit = () => {
-    console.log("Log In");
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
+    await signIn("credentials", {
+      username: username,
+      password: password,
+      redirect: false,
+    });
   };
 
   return (
     <div className="flex justify-center">
-      <form className="bg-zinc-800 sm:m-4 sm:max-w-xl sm:rounded sm:border-2 sm:border-zinc-50">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-zinc-800 sm:m-4 sm:max-w-xl sm:rounded sm:border-2 sm:border-zinc-50"
+      >
         <p className="mt-2 text-center text-4xl text-zinc-50">LOG IN</p>
         <div className="m-5 grid grid-cols-2">
           <p className="text-lg text-zinc-50">Username</p>
@@ -26,7 +37,7 @@ const LogInForm: React.FC = () => {
           <p className="text-lg text-zinc-50">Password</p>
           <input
             className="my-1 rounded-md border-2 border-zinc-50 bg-zinc-800 text-zinc-50"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder=" Enter password"
             onChange={(e) => setPassword(e.target.value)}
             value={password}
@@ -50,7 +61,7 @@ const LogInForm: React.FC = () => {
         </div>
         <div className="flex justify-center">
           <button
-            onClick={handleSubmit}
+            type="submit"
             className="mb-2 rounded-lg border-2 border-zinc-50 bg-zinc-800 p-1 text-lg text-zinc-50 hover:bg-gradient-to-br hover:from-zinc-800 hover:to-blue-800"
           >
             Log In
