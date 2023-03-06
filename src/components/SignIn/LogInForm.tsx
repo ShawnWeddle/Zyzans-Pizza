@@ -1,12 +1,11 @@
 import { useState } from "react";
 import type { FormEventHandler } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 const LogInForm: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [errors, setErrors] = useState<string[]>([]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -14,7 +13,7 @@ const LogInForm: React.FC = () => {
     await signIn("credentials", {
       username: username,
       password: password,
-      redirect: false,
+      callbackUrl: `${window.location.origin}`,
     });
   };
 

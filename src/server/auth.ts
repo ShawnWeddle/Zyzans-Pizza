@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { GetServerSidePropsContext } from "next";
 import { NextApiRequest, NextApiResponse } from 'next';
 import {
@@ -9,6 +10,8 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "../env.mjs";
 import { prisma } from "./db";
+import { compare } from "bcrypt";
+import type { User } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -40,17 +43,19 @@ declare module "next-auth" {
  **/
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    jwt({token, user}){
+    async jwt({token, user}){
       if(user){
-        token.name = user.name
+        token.user = user;
       }
+      console.log(token, user);
       return token;
     },
-    session({ session, user }) {
+    async session({ session, token }) {
       if (session.user) {
-        session.user.id = user.id;
+        session.user = token.user as User;
         // session.user.role = user.role; <-- put other properties on the session here
       }
+      console.log(session, token);
       return session;
     },
   },
@@ -58,13 +63,26 @@ export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       type: "credentials",
-      credentials: {},
-      authorize(credentials, req){
-        const {username, password} = credentials as {username: string; password: string;}
-        if(username !== "ShawnWedd" || password !== "PassWord1234"){
+      credentials: {
+        username: { label: "username", type: "text"},
+        password: { label: "password", type: "password"}
+      },
+      async authorize(credentials, req){
+        const user = await prisma.user.findUnique({
+          where: {
+            username: credentials?.username
+          }
+        });
+        if(!user){
           return null;
         }
-        return {id: "1234", username: "ShawnWedd"}
+
+        const passwordValid = await compare(credentials?.password as string, user.password);
+        if(!passwordValid){
+          return null;
+        }
+
+        return user;
       }
     })
   ],

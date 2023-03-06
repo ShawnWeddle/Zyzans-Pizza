@@ -3,16 +3,12 @@ import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-import MainLogo from "../components/Nav/MainLogo";
-import SignUpButton from "../components/Nav/SignUpButton";
-import LogInButton from "../components/Nav/LogInButton";
+import NavBar from "../components/Nav/NavBar";
 import SignUpForm from "../components/SignIn/SignUpForm";
 
 import { api } from "../utils/api";
 
 const SignUpPage: NextPage = () => {
-  //const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       <Head>
@@ -21,15 +17,7 @@ const SignUpPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="min-h-screen bg-zinc-800">
-        <nav className="flex justify-between bg-zinc-700">
-          <div className="m-4">
-            <MainLogo />
-          </div>
-          <div className="m-4 flex gap-4">
-            <SignUpButton />
-            <LogInButton />
-          </div>
-        </nav>
+        <NavBar />
         <SignUpForm />
       </main>
     </>
