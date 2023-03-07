@@ -11,11 +11,7 @@ const MainGrid: React.FC = () => {
   console.log(getAllPosts.data);
 
   const Cells = activePosts.map((post, index) => (
-    <MainCell
-      location={post.location}
-      occupied={post._id === "NoID" ? false : true}
-      key={index}
-    />
+    <MainCell postProperties={post} key={index} />
   ));
 
   return (

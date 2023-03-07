@@ -6,7 +6,7 @@ const Window: React.FC = () => {
   return (
     <div className="w-full gap-1 bg-zinc-800 p-1 text-zinc-50 sm:m-4 sm:max-w-xl sm:rounded lg:max-w-md lg:bg-zinc-700">
       {postState.windowMode === "rules" && <RulesWindow />}
-      {postState.windowMode === "create" && (
+      {postState.windowMode === "create" && postState.activePost && (
         <CreateWindow
           username="ClayDad"
           location={postState.activePost.location}
@@ -68,7 +68,7 @@ const CreateWindow: React.FC<InnerWindowProps> = (props: InnerWindowProps) => {
           type="button"
           onClick={() => {
             postDispatch({
-              type: "CHANGE-WINDOW-MODE",
+              type: "CHANGE",
               payload: {
                 windowMode: "rules",
                 activePost: postState.activePost,
