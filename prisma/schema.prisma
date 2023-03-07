@@ -19,10 +19,10 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
-  userId    String   @db.ObjectId
-  username  String
+  userId    String   @unique @db.ObjectId
+  username  String   @unique
   message   String
-  location  Int
+  location  Int      @unique
 }
 
 // Necessary for Next auth
