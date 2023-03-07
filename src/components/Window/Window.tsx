@@ -1,11 +1,19 @@
-interface WindowProps {
-  mode: "rules" | "edit";
-}
+import { api } from "../../utils/api";
+import { usePostContext } from "../../hooks/usePostContext";
 
-const Window: React.FC<WindowProps> = (props: WindowProps) => {
+const Window: React.FC = () => {
+  const { postState, postDispatch } = usePostContext();
   return (
     <div className="w-full gap-1 bg-zinc-800 p-1 text-zinc-50 sm:m-4 sm:max-w-xl sm:rounded lg:max-w-md lg:bg-zinc-700">
-      {props.mode === "rules" && <RulesWindow />}
+      {postState.windowMode === "rules" && <RulesWindow />}
+      {postState.windowMode === "create" && (
+        <CreateWindow
+          username="ClayDad"
+          location={postState.activePost.location}
+          message=""
+          page="home"
+        />
+      )}
     </div>
   );
 };
@@ -44,17 +52,47 @@ interface InnerWindowProps {
 }
 
 const CreateWindow: React.FC<InnerWindowProps> = (props: InnerWindowProps) => {
+  const { postState, postDispatch } = usePostContext();
+
+  const createPost = api.postRouter.createPost.useMutation();
+
+  const handleSubmit = () => {
+    //createPost({});
+  };
   return (
-    <div className="flex flex-col">
-      <form>
-        <div className="flex">
-          <span>{props.location}</span>
-          <span>{props.username}</span>
-          <button>✕</button>
-        </div>
-        <input />
-        <button type="submit"></button>
-      </form>
-    </div>
+    <form className="flex flex-col" onSubmit={handleSubmit}>
+      <div className="mx-4 my-2 flex justify-between text-2xl">
+        <span>{props.location}</span>
+        <span>{props.username}</span>
+        <button
+          type="button"
+          onClick={() => {
+            postDispatch({
+              type: "CHANGE-WINDOW-MODE",
+              payload: {
+                windowMode: "rules",
+                activePost: postState.activePost,
+                posts: postState.posts,
+              },
+            });
+          }}
+        >
+          ✕
+        </button>
+      </div>
+      <textarea
+        placeholder="Please type your message here"
+        rows={4}
+        className="m-2 bg-zinc-50 text-black"
+      />
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          className="rounded-lg border-2 border-zinc-50 bg-zinc-800 p-1 text-lg hover:bg-gradient-to-br hover:from-zinc-800 hover:to-blue-800"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
   );
 };

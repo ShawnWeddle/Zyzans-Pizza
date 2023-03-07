@@ -6,14 +6,14 @@ export const PostContext = createContext<ContextType | null>(null);
 
 type ContextType = {
   postState: {
-    windowMode: string;
+    windowMode: "rules" | "display" | "edit" | "create";
     activePost: PostDocument | UnoccupiedPostType;
     posts: (PostDocument | UnoccupiedPostType)[];
   };
   postDispatch: React.Dispatch<{
     type: string;
     payload: {
-      windowMode: string;
+      windowMode: "rules" | "display" | "edit" | "create";
       activePost: PostDocument | UnoccupiedPostType;
       posts: (PostDocument | UnoccupiedPostType)[];
     };
@@ -25,14 +25,14 @@ type PostContextProviderProps = {
 };
 
 type PostReducerState = {
-  windowMode: string;
+  windowMode: "rules" | "display" | "edit" | "create";
   activePost: PostDocument | UnoccupiedPostType;
   posts: (PostDocument | UnoccupiedPostType)[];
 };
 type PostReducerAction = {
   type: string;
   payload: {
-    windowMode: string;
+    windowMode: "rules" | "display" | "edit" | "create";
     activePost: PostDocument | UnoccupiedPostType;
     posts: (PostDocument | UnoccupiedPostType)[];
   };
@@ -44,8 +44,11 @@ export const postReducer = (
 ) => {
   switch (action.type) {
     case "CHANGE-WINDOW-MODE":
-      state.windowMode = action.payload.windowMode;
-      return state;
+      return {
+        windowMode: action.payload.windowMode,
+        activePost: action.payload.activePost,
+        posts: action.payload.posts,
+      };
     default:
       return state;
   }
@@ -53,7 +56,7 @@ export const postReducer = (
 
 export const PostContextProvider = ({ children }: PostContextProviderProps) => {
   const [postState, postDispatch] = useReducer(postReducer, {
-    windowMode: "CLOSED",
+    windowMode: "rules",
     activePost: { _id: "NoID", username: "", message: "", location: -1 },
     posts: basePostArray(),
   });

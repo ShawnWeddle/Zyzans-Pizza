@@ -7,7 +7,6 @@ import LogOutButton from "./LogOutButton";
 
 const NavBar: React.FC = () => {
   const { data: sessionData } = useSession();
-  console.log("session data", sessionData);
 
   return (
     <nav className="flex justify-between bg-zinc-700">
