@@ -8,8 +8,6 @@ const MainGrid: React.FC = () => {
 
   const getAllPosts = api.postRouter.getall.useQuery();
 
-  console.log(getAllPosts.data);
-
   const Cells = activePosts.map((post, index) => (
     <MainCell postProperties={post} key={index} />
   ));

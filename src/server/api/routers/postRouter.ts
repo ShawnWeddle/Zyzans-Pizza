@@ -7,7 +7,7 @@ export const postRouter = createTRPCRouter({
   .query(({ctx}) => {
     return ctx.prisma.post.findMany();
   }),
-
+  
   createPost: protectedProcedure
   .input(z.object({
     location: z.number(),
@@ -36,6 +36,7 @@ export const postRouter = createTRPCRouter({
     message: z.string()
   }))
   .mutation(({input, ctx}) => {
+    console.log(ctx.session.user.id);
     return ctx.prisma.post.update({
       where: {
         userId: ctx.session.user.id
